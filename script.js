@@ -92,7 +92,7 @@ var upperCasedCharacters = [
 function getPasswordOptions() {
   var length = parseInt(prompt("Enter the length of your password (between 8 and 128):"));
 
-  if (isNaN(langth) || length < 8 || length > 128) {
+  if (isNaN(length) || length < 8 || length > 128) {
     alert("Password length must be a number between 8 and 128.");
     return null;
   }
@@ -105,17 +105,51 @@ function getPasswordOptions() {
   if (!includeLowercase && !includeUppercase && !includeNumeric && !includeSpecial) {
     alert("At least one character type must be selected");
     return null;
+
   }
 
-}
+  var passwordOptions = {
+    length: length,
+    includeLowercase: includeLowercase,
+    includeUppercase: includeUppercase,
+    includeNumeric: includeNumeric,
+    includeSpecial: includeSpecial
+  };
 
-// Function for getting a random element from an array
-function getRandom(arr) {
+  return passwordOptions;
 
 }
 
 // Function to generate password with user input
 function generatePassword() {
+  var options = getPasswordOptions();
+  if (!options) {
+    //return an empty string if option are not selected
+    return "";
+  }
+  var availableCharacters = [];
+
+  if (options.includeLowercase) {
+    availableCharacters = availableCharacters.concat(lowerCasedCharacters);
+  }
+  if (options.includeUppercase) {
+    availableCharacters = availableCharacters.concat(upperCasedCharacters);
+  }
+  if (options.includeNumeric) {
+    availableCharacters = availableCharacters.concat(numericCharacters);
+  }
+  if (options.includeSpecial) {
+    availableCharacters = availableCharacters.concat(specialCharacters);
+  }
+
+  var passward = "";
+  for (var index = 0; index < options.length; index++) {
+    var randomIndex = Math.floor(Math.random() * availableCharacters.length);
+    passward += availableCharacters[randomIndex];
+  }
+  
+
+  return passward;
 
 }
 
@@ -127,7 +161,10 @@ function writePassword() {
   var password = generatePassword();
   var passwordText = document.querySelector('#password');
 
-  passwordText.value = password;
+  if (password) {
+    passwordText.value = password;
+    alert("Your generated password is: " + password);
+  }
 }
 
 // Add event listener to generate button
